@@ -18,12 +18,6 @@ namespace FileProcessor.API.Middleware
 
         public async Task Invoke(HttpContext context) {
 
-            if(!IsProtectedEndpoint(context.Request.Path))
-            {
-                await _next(context);
-                return;
-            }
-
             if (!context.Request.Headers.TryGetValue(_options.HeaderName, out var apiKey))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -51,15 +45,5 @@ namespace FileProcessor.API.Middleware
             await _next(context);
         }
 
-        #region private methods
-
-        private bool IsProtectedEndpoint(PathString requestPath)
-        {
-            var protectedEndpoints = _configuration.GetSection("FileProcessingOptions:ProtectedEndpoints").Get<List<string>>();
-            return protectedEndpoints.Any(endpoint =>
-                requestPath.StartsWithSegments(endpoint, StringComparison.OrdinalIgnoreCase));
-        }   
-
-        #endregion
     }
 }

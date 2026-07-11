@@ -34,26 +34,10 @@ namespace FileProcessor.Application.Services
             
             var extension = Path.GetExtension(file.FileName);
 
-            var fileType = new FileTypeEnum();
-
-            if(extension.Equals(".csv", StringComparison.OrdinalIgnoreCase))
-            {
-                fileType = FileTypeEnum.CSV;
-            }
-            else if (extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
-            {
-                fileType = FileTypeEnum.JSON;
-            }
-            else
-            {
-                fileType = FileTypeEnum.Unknown;
-                throw new ArgumentException("Invalid file uploded");
-            }
-
             var entity = new ProcessedFileDetails
             {
                 Filename = file.FileName,
-                FileType = fileType,
+                FileType = GetFileType(file.ContentType),
                 ContentType = file.ContentType,
                 FileSize = file.Length,
                 Content = string.Empty,
@@ -161,6 +145,17 @@ namespace FileProcessor.Application.Services
                 Result = $"Filtered {result.Count} records where lastname starts with '{randomChar}'. They are {string.Join(',',result.Select(x => x.LastName))}",
             };
         }
+        
+        private FileTypeEnum GetFileType(string contentType)
+        {
+            return contentType switch
+            {
+                "text/csv" => FileTypeEnum.CSV,
+                "application/json" => FileTypeEnum.JSON,
+                _ => FileTypeEnum.Unknown,
+            };
+        }
+
         #endregion
     }
 }

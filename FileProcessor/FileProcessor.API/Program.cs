@@ -65,6 +65,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.UseMiddleware<ApiKeyMiddleware>();
+app.UseMiddleware<FileValidationMiddleware>();
 
 app.MapControllers();
 
