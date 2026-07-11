@@ -1,3 +1,5 @@
+using FileProcessor.API.Configurations;
+using FileProcessor.API.Middleware;
 using FileProcessor.Application.Interfaces;
 using FileProcessor.Application.Services;
 using FileProcessor.Domain.Interfaces;
@@ -18,6 +20,9 @@ builder.Services.AddDbContext<FileProcessorDbContext>(options => {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.Configure<APIKeyOptions>(
+    builder.Configuration.GetSection("ApiKey"));
+
 builder.Services.AddScoped<IFileProcessorRepository, FileProcessorRepository>();
 builder.Services.AddScoped<IFileProcessorService, FileProcessorService>();  
 
@@ -33,6 +38,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ApiKeyMiddleware>();
 
 app.MapControllers();
 
