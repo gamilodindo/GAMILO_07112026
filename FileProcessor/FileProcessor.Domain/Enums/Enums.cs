@@ -9,6 +9,7 @@ namespace FileProcessor.Domain.Enums
     public enum FileTypeEnum
     {
         CSV,
-        JSON
+        JSON,
+        Unknown
     }
 }

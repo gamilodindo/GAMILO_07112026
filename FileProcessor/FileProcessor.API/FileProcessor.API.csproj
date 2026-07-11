@@ -15,7 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FileProcessor.Application\FileProcessor.Application.csproj" />
     <ProjectReference Include="..\FileProcessor.Infrastructure\FileProcessor.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Database\" />
   </ItemGroup>
 
 </Project>
