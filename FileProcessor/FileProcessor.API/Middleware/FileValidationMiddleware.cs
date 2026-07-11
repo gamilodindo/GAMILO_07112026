@@ -32,7 +32,6 @@
             var form = await context.Request.ReadFormAsync();
             var file = form.Files.FirstOrDefault();
 
-            
 
             if (file is null)
             {
