@@ -82,7 +82,7 @@ Only the upload endpoint is protected using an API key.
 
 1. Expand the **POST /api/Files/upload** endpoint.
 2. Click **Try it out**.
-3. Click **Choose File** and select a supported file (`.csv` or `.json`).
+3. Click **Choose File** and select a supported file (`.csv` or `.json` . Sample file is included on this repository named sample.json and sample_csv.csv).
 4. Click **Execute**.
 5. Review the response body.
 
