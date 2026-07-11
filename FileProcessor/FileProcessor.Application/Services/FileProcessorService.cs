@@ -42,11 +42,12 @@ namespace FileProcessor.Application.Services
             }
             else if (extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
             {
-                fileType = FileTypeEnum.CSV;
+                fileType = FileTypeEnum.JSON;
             }
             else
             {
-                fileType = FileTypeEnum.CSV;
+                fileType = FileTypeEnum.Unknown;
+                throw new ArgumentException("Invalid file uploded");
             }
 
             var entity = new ProcessedFileDetails
@@ -71,15 +72,20 @@ namespace FileProcessor.Application.Services
             };
         }
 
-        public async Task<IEnumerable<UploadFileReponseDto>> GetReportAsync()
+        public async Task<IEnumerable<ReportDto>> GetReportAsync()
         {
             var uploadedFiles = await _repository.GetAllAsync();
 
-            return uploadedFiles.Select(x => new UploadFileReponseDto { 
+            return uploadedFiles.Select(x => new ReportDto
+            { 
             
                 Filename = x.Filename,
-                RecordCount = x.RecordCount,
-                Result = x.Result,
+                FileType = x.FileType.ToString(),
+                ContentType = x.ContentType,
+                FileSize = $"{Math.Round((x.FileSize / 1024.0),2)} kb",
+                RecordCount = $"{x.RecordCount} item(s)",
+                ProcessingTime = $"{Math.Round(x.ProcessingTime,2)} ms",
+                ProcessedDateTime = x.DateCreated.ToString("MMMM dd, yyyy HH:mm:ss 'UTC'")
             });
         }
 
@@ -141,6 +147,7 @@ namespace FileProcessor.Application.Services
             };
         }
         private async Task<UploadFileReponseDto> ProcessJSON(Stream stream) {
+            stream.Position = 0;
             var items = await JsonSerializer.DeserializeAsync<List<JSONFileItemDto>>(stream);
 
             char randomChar = (char)Random.Shared.Next('A', 'Z' + 1);

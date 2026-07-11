@@ -11,6 +11,6 @@ namespace FileProcessor.Application.Interfaces
     public interface IFileProcessorService
     {
         Task<UploadFileReponseDto> ProcessFileAsync(IFormFile file);
-        Task<IEnumerable<UploadFileReponseDto>> GetReportAsync();
+        Task<IEnumerable<ReportDto>> GetReportAsync();
     }
 }

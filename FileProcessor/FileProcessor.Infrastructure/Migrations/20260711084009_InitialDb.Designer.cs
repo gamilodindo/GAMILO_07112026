@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FileProcessor.Infrastructure.Migrations
 {
     [DbContext(typeof(FileProcessorDbContext))]
-    [Migration("20260711062155_InitialDb")]
+    [Migration("20260711084009_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -52,6 +52,10 @@ namespace FileProcessor.Infrastructure.Migrations
 
                     b.Property<int>("RecordCount")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Result")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

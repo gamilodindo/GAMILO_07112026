@@ -21,6 +21,7 @@ namespace FileProcessor.Infrastructure.Migrations
                     ContentType = table.Column<string>(type: "TEXT", nullable: false),
                     FileSize = table.Column<double>(type: "REAL", nullable: false),
                     Content = table.Column<string>(type: "TEXT", nullable: false),
+                    Result = table.Column<string>(type: "TEXT", nullable: false),
                     RecordCount = table.Column<int>(type: "INTEGER", nullable: false),
                     ProcessingTime = table.Column<double>(type: "REAL", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false)
