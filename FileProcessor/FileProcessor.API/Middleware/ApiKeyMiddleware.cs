@@ -8,15 +8,19 @@ namespace FileProcessor.API.Middleware
         private readonly RequestDelegate _next;
         private readonly APIKeyOptions _options;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<ApiKeyMiddleware> _logger;
 
-        public ApiKeyMiddleware(RequestDelegate next, IOptions<APIKeyOptions> options, IConfiguration configuration)
+        public ApiKeyMiddleware(RequestDelegate next, IOptions<APIKeyOptions> options, IConfiguration configuration, ILogger<ApiKeyMiddleware> logger)
         {
             _next = next;
             _options = options.Value;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context) {
+
+            _logger.LogInformation("Incoming request: {Method} {Path}",context.Request.Method,context.Request.Path);
 
             if (!context.Request.Headers.TryGetValue(_options.HeaderName, out var apiKey))
             {
@@ -26,6 +30,8 @@ namespace FileProcessor.API.Middleware
                 {
                     message = "API Key is missing."
                 });
+
+                _logger.LogWarning("UNAUTHORIZRED: API Key is missing.");
 
                 return;
             }
@@ -39,10 +45,13 @@ namespace FileProcessor.API.Middleware
                     message = "Invalid API Key."
                 });
 
+                _logger.LogWarning("UNAUTHORIZRED: Invalid API Key.");
                 return;
             }
 
             await _next(context);
+
+            _logger.LogInformation("Response Status: {StatusCode}", context.Response.StatusCode);
         }
 
     }

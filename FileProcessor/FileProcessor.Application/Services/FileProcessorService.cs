@@ -4,6 +4,7 @@ using FileProcessor.Domain.Entities;
 using FileProcessor.Domain.Enums;
 using FileProcessor.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,21 +18,27 @@ namespace FileProcessor.Application.Services
     public class FileProcessorService : IFileProcessorService
     {
         private readonly IFileProcessorRepository _repository;
-        public FileProcessorService(IFileProcessorRepository repository)
+        private readonly ILogger<FileProcessorService> _logger;
+        public FileProcessorService(IFileProcessorRepository repository, ILogger<FileProcessorService> logger)
         {
-                _repository = repository;
+            _repository = repository;
+            _logger = logger;
         }
 
         public async Task<UploadFileReponseDto> ProcessFileAsync(IFormFile file)
         {
             if (file == null || file.Length == 0) {
-                throw new ArgumentException("No file was uploaded");    
+                _logger.LogWarning("No file was uploaded");
+                throw new ArgumentException("No file was uploaded");
+                
             }
 
             var stopwatch = Stopwatch.StartNew();
 
             var result = await this.ProcessAsync(file);
-            
+
+           
+
             var extension = Path.GetExtension(file.FileName);
 
             var entity = new ProcessedFileDetails
@@ -47,6 +54,8 @@ namespace FileProcessor.Application.Services
             };
 
             await _repository.AddAsync(entity);
+
+            _logger.LogInformation("Successfully processed {FileName}. Records: {Count}", file.FileName, result.RecordCount);
 
             return new UploadFileReponseDto
             {
@@ -123,6 +132,7 @@ namespace FileProcessor.Application.Services
 
             if (!values.Any())
             {
+                _logger.LogWarning("No numeric values where found");
                 throw new InvalidOperationException("No numeric values where found");
             }
 
