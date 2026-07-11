@@ -11,6 +11,7 @@ namespace FileProcessor.Application.Dtos
         public string Filename { get; set; } = string.Empty;
         public int RecordCount { get; set; }
         public string Result { get; set; } = string.Empty;
-        public DateTime ProcessedDateTime { get; set; } = DateTime.UtcNow;
-    }
+        public string ProcessingTime { get; set; }
+        public string ProcessedDateTime { get; set; }
+    }   
 }

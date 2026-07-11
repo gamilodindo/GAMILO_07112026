@@ -52,7 +52,9 @@ namespace FileProcessor.Application.Services
             {
                 Filename = entity.Filename,
                 RecordCount = entity.RecordCount,
-                Result = entity.Result
+                Result = entity.Result,
+                ProcessingTime = $"{Math.Round(entity.ProcessingTime, 2)} ms",
+                ProcessedDateTime = entity.DateCreated.ToString("MMMM dd, yyyy HH:mm:ss 'UTC'")
             };
         }
 
@@ -127,7 +129,7 @@ namespace FileProcessor.Application.Services
             return new UploadFileReponseDto{             
                 Filename = reader.BaseStream is FileStream fileStream ? Path.GetFileName(fileStream.Name) : "Unknown",
                 RecordCount = values.Count,
-                Result = $"Sum: {values.Sum()}, Average: {values.Average()}",
+                Result = $"The total number of customers is {values.Count}, and the total amount paid is Php{values.Sum().ToString("N2")}. Individual payments range from Php{values.Min().ToString("N2")} to Php{values.Max().ToString("N2")}",
             };
         }
         private async Task<UploadFileReponseDto> ProcessJSON(Stream stream) {
@@ -142,7 +144,7 @@ namespace FileProcessor.Application.Services
             {
                 Filename = stream is FileStream fileStream ? Path.GetFileName(fileStream.Name) : "Unknown",
                 RecordCount = result.Count,
-                Result = $"Filtered {result.Count} records where lastname starts with '{randomChar}'. They are {string.Join(',',result.Select(x => x.LastName))}",
+                Result = $"Filtered {result.Count} records out of {items.Count} where lastname starts with '{randomChar}'. They are {string.Join(',',result.Select(x => x.LastName))}",
             };
         }
         
