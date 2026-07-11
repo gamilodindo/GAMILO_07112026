@@ -27,17 +27,9 @@ namespace FileProcessor.Application.Services
 
         public async Task<UploadFileReponseDto> ProcessFileAsync(IFormFile file)
         {
-            if (file == null || file.Length == 0) {
-                _logger.LogWarning("No file was uploaded");
-                throw new ArgumentException("No file was uploaded");
-                
-            }
-
             var stopwatch = Stopwatch.StartNew();
 
             var result = await this.ProcessAsync(file);
-
-           
 
             var extension = Path.GetExtension(file.FileName);
 
