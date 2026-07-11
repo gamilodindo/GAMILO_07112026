@@ -7,14 +7,22 @@ namespace FileProcessor.API.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly APIKeyOptions _options;
+        private readonly IConfiguration _configuration;
 
-        public ApiKeyMiddleware(RequestDelegate next, IOptions<APIKeyOptions> options)
+        public ApiKeyMiddleware(RequestDelegate next, IOptions<APIKeyOptions> options, IConfiguration configuration)
         {
             _next = next;
             _options = options.Value;
+            _configuration = configuration;
         }
 
         public async Task Invoke(HttpContext context) {
+
+            if(!IsProtectedEndpoint(context.Request.Path))
+            {
+                await _next(context);
+                return;
+            }
 
             if (!context.Request.Headers.TryGetValue(_options.HeaderName, out var apiKey))
             {
@@ -42,5 +50,16 @@ namespace FileProcessor.API.Middleware
 
             await _next(context);
         }
+
+        #region private methods
+
+        private bool IsProtectedEndpoint(PathString requestPath)
+        {
+            var protectedEndpoints = _configuration.GetSection("FileProcessingOptions:ProtectedEndpoints").Get<List<string>>();
+            return protectedEndpoints.Any(endpoint =>
+                requestPath.StartsWithSegments(endpoint, StringComparison.OrdinalIgnoreCase));
+        }   
+
+        #endregion
     }
 }

@@ -50,6 +50,10 @@ namespace FileProcessor.Infrastructure.Migrations
                     b.Property<int>("RecordCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Result")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("ProcessedFileDetails");

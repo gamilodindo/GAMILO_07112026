@@ -141,6 +141,7 @@ namespace FileProcessor.Application.Services
             };
         }
         private async Task<UploadFileReponseDto> ProcessJSON(Stream stream) {
+            stream.Position = 0;
             var items = await JsonSerializer.DeserializeAsync<List<JSONFileItemDto>>(stream);
 
             char randomChar = (char)Random.Shared.Next('A', 'Z' + 1);
