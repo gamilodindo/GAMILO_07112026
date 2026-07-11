@@ -1,3 +1,6 @@
 <Solution>
   <Project Path="FileProcessor.API/FileProcessor.API.csproj" />
+  <Project Path="FileProcessor.Application/FileProcessor.Application.csproj" />
+  <Project Path="FileProcessor.Domain/FileProcessor.Domain.csproj" />
+  <Project Path="FileProcessor.Infrastructure/FileProcessor.Infrastructure.csproj" />
 </Solution>
