@@ -134,3 +134,96 @@ Only the upload endpoint is protected using an API key.
   }
 ]
 ```
+
+## Error Responses
+
+### Missing API Key
+
+```json
+{
+  "message": "API Key is missing."
+}
+```
+
+### Invalid API Key
+
+```json
+{
+  "message": "Invalid API Key."
+}
+```
+
+### Unsupported File Type
+
+```json
+{
+  "message": "Unsupported file type."
+}
+```
+
+---
+
+## Logging
+
+Application logs are generated using **Serilog** and written to the `Logs` directory.
+
+---
+
+## Running with Docker
+
+### Build the Docker Image
+
+From the solution root directory:
+
+```bash
+docker build -t fileprocessor-api -f FileProcessor.API/Dockerfile .
+```
+
+### Run the Docker Container
+
+```bash
+docker run -d -p 8080:8080 --name fileprocessor fileprocessor-api
+```
+
+### Access Swagger
+
+```
+http://localhost:8080/swagger
+```
+
+---
+
+## Docker Database Notes
+
+The application uses a SQLite database located in the `Database` folder.
+
+When running in Docker:
+
+- The application creates the `Database` directory automatically if it does not exist.
+- Entity Framework Core migrations initialize the database on startup (if configured).
+- If you want the SQLite database to persist after removing the container, mount the `Database` folder as a Docker volume.
+
+Example:
+
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -v ${PWD}/Database:/app/Database \
+  --name fileprocessor \
+  fileprocessor-api
+```
+
+---
+
+## Project Structure
+
+```text
+FileProcessor.sln
+│
+├── FileProcessor.API
+├── FileProcessor.Application
+├── FileProcessor.Domain
+└── FileProcessor.Infrastructure
+```
+
+---
