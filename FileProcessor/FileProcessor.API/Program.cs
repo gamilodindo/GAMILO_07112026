@@ -46,6 +46,7 @@ builder.Services.AddDbContext<FileProcessorDbContext>(options => {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+
 builder.Services.Configure<APIKeyOptions>(
     builder.Configuration.GetSection("ApiKey"));
 
@@ -70,12 +71,18 @@ builder.Services.AddScoped<IFileProcessorService, FileProcessorService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var databaseFolder = Path.Combine(app.Environment.ContentRootPath, "Database");
+Directory.CreateDirectory(databaseFolder);
+
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var db = scope.ServiceProvider.GetRequiredService<FileProcessorDbContext>();
+    db.Database.Migrate();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 

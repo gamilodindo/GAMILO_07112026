@@ -22,6 +22,18 @@ namespace FileProcessor.API.Middleware
 
             _logger.LogInformation("Incoming request: {Method} {Path}",context.Request.Method,context.Request.Path);
 
+            if (context.Request.Path.StartsWithSegments("/swagger"))
+            {
+                await _next(context);
+                return;
+            }
+
+            if (!IsProtectedEndpoint(context.Request.Path))
+            {
+                await _next(context);
+                return;
+            }
+
             if (!context.Request.Headers.TryGetValue(_options.HeaderName, out var apiKey))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -53,6 +65,15 @@ namespace FileProcessor.API.Middleware
 
             _logger.LogInformation("Response Status: {StatusCode}", context.Response.StatusCode);
         }
+
+        #region private methods
+        private bool IsProtectedEndpoint(PathString requestPath)
+        {
+            var protectedEndpoints = _configuration.GetSection("FileProcessingOptions:ProtectedEndpoints").Get<List<string>>();
+            return protectedEndpoints.Any(endpoint =>
+                requestPath.StartsWithSegments(endpoint, StringComparison.OrdinalIgnoreCase));
+        }
+        #endregion
 
     }
 }
